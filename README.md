@@ -9,7 +9,7 @@ The list is for all the people who became a political prisoner in China, so it c
 | Name | Gender | Date of Birth | Date of Death | Place | Sentence | Source |
 | --- | --- | --- | --- | --- | --- | --- |
 | 刘晓波 | male | 1955-12-28 | 2017-07-13 | 长春 | 2019-12-07 | https://cppc1989.blogspot.com/2014/02/blog-post.html |
-| Name | male / female | 2000-01-01 / 2000-01 / 2000 / empty | 2000-01-01 / 2000-01 / 2000 / empty | 北京 | 2025-01-01 / 2025-01 / 20205 / detention / unknown | https://source1.com https://source2.com
+| Name | male / female | 2000-01-01 / 2000-01 / 2000 / empty | 2000-01-01 / 2000-01 / 2000 / empty | 北京 | 2025-01-01 / 2025-01 / 2025 / detention / unknown | https://source1.com https://source2.com
 
 
 ### Name
