@@ -28,7 +28,7 @@ interface Prisoner {
 }
 
 
-d3.csv("data/chinese-political-prisoners.csv").then((data: any) => {
+d3.csv("chinese-political-prisoners.csv").then((data: any) => {
   const prisoners = crossfilter(data as Array<Prisoner>);
   const all = prisoners.groupAll();
 

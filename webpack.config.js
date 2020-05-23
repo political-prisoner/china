@@ -1,4 +1,7 @@
 module.exports = {
+    output: {
+        path: __dirname + '/docs'
+    },
     mode: "production",
 
     // Enable sourcemaps for debugging webpack's output.

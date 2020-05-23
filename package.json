@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "server": "http-server",
+    "server": "http-server docs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
