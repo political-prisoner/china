@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>中国政治犯 - Chinese Political Prisoners</title>
+        <style>
+            .dc-chart g.row text {
+                fill: black !important;  
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div id="gender-chart">
+                    <strong>性别</strong>
+                    <div></div>
+                </div>
+                <div id="life-condition-chart">
+                    <strong>生死</strong>
+                    <div></div>
+                </div>
+                <div id="status-chart">
+                    <strong>状态</strong>
+                    <div></div>
+                </div>
+                <div id="date-of-birth-chart">
+                    <strong>出生年份</strong>
+                    <div></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <form style="margin-bottom: 5px;">
+                        <div id="search-name"></div>
+                    </form>
+                </div>
+                <div id="paging" class="col-8">
+                    <div class="float-right">
+                        <span id="begin"></span>-<span id="end"></span> of <span id="size"></span> <span id="totalsize"></span>
+                        <button id="last" class="btn btn-secondary btn-sm">上一页</button>
+                        <button id="next" class="btn btn-secondary btn-sm">下一页</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <table id="prisoner-table" class="table table-striped">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <script src="./dist/main.js"></script>
+    </body>
+</html>
