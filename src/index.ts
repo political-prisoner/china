@@ -66,15 +66,17 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
     } else if (sentence === "detention") {
       return "看守所";
     } else {
-      let d = moment(sentence);
+      let date = moment(sentence);
       if (sentence.length === 4) { // YYYY -> YYYY-12-31
-        d = moment(sentence).endOf("year");
+        date = moment(sentence).endOf("year");
       } else if (sentence.length === 7) { // YYYY-MM -> YYYY-MM-ENDofMONTH
-        d = moment(sentence).endOf("month");
+        date = moment(sentence).endOf("month");
       } else if (sentence.length === 10) {
-        d = moment(sentence);
+        date = moment(sentence);
+      } else {
+        console.log(`Invalid sentence field. Name: ${d.Name}, Sentence: ${sentence}`);
       }
-      if (moment() < d) {
+      if (moment() < date) {
         return "监狱";
       } else {
         return "出狱";
