@@ -1,6 +1,10 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 module.exports = {
     output: {
-        path: __dirname + '/docs'
+        path: __dirname + '/docs',
+        filename: 'dist/[name].[contenthash:6].js'
     },
     mode: "production",
 
@@ -11,6 +15,18 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".js", ".ts"]
     },
+
+    plugins: [
+        new CleanWebpackPlugin({cleanOnceBeforeBuildPatterns: ['dist/*'],}),
+        new HtmlWebpackPlugin({
+            filename: 'en/index.html',
+            template: 'src/templates/en/index.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'zh/index.html',
+            template: 'src/templates/zh/index.html'
+        })
+    ],
 
     module: {
         rules: [
