@@ -13,7 +13,7 @@ import "dc/dist/style/dc.min.css"
 const genderChart = dc.pieChart("#gender-chart");
 const lifeConditionChart = dc.pieChart("#life-condition-chart");
 const statusChart = dc.rowChart("#status-chart")
-const dateOfBirthChart = dc.barChart("#date-of-birth-chart");
+const yearOfBirthChart = dc.barChart("#year-of-birth-chart");
 const searchNameWidget = customSearch("#search-name");
 const prisonerTable = dc.dataTable("#prisoner-table");
 
@@ -28,10 +28,67 @@ interface Prisoner {
 }
 
 
-d3.csv("chinese-political-prisoners.csv").then((data: any) => {
+type IALL_TRANSLATIONS = {
+  [x in "en" | "zh"]: II18N;
+};
+type I18N_ENTRY = "released" | "unknown" | "sentence" | "prison" | "detention" | "gender" | "male" | "female" | "alive" | "dead" |  "name" | "source" |
+                  "place_of_birth" | "date_of_birth" | "date_of_death" | "search_name";
+type II18N = {
+  [name in I18N_ENTRY]: string;
+};
+
+const ALL_TRANSLATIONS: IALL_TRANSLATIONS = {
+  "en": {
+    "released": "Released",
+    "unknown": "Unknown",
+    "sentence": "Sentence",
+    "prison": "In Prison",
+    "detention": "In Detention",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "alive": "Alive",
+    "dead": "Dead",
+    "name": "Name",
+    "source": "Source",
+    "place_of_birth": "Place of Birth",
+    "date_of_birth": "Date of Birth",
+    "date_of_death": "Date of Death",
+    "search_name": "Search Name"
+  },
+  "zh": {
+    "released": "出狱",
+    "unknown": "未知",
+    "sentence": "刑",
+    "prison": "监狱",
+    "detention": "拘留",
+    "gender": "性别",
+    "male": "男",
+    "female": "女",
+    "alive": "活着",
+    "dead": "死亡",
+    "name": "姓名",
+    "source": "来源",
+    "place_of_birth": "出生地",
+    "date_of_birth": "出生日期",
+    "date_of_death": "死亡日期",
+    "search_name": "搜索姓名"
+  }
+}
+
+const path = window.location.pathname;
+let i18n: II18N;
+if (path.startsWith("/en")) {
+  i18n = ALL_TRANSLATIONS.en;
+} else if (path.startsWith("/zh")) {
+  i18n = ALL_TRANSLATIONS.zh;
+} else {
+  i18n = ALL_TRANSLATIONS.en; // This line should never be executed.
+}
+
+d3.csv("/chinese-political-prisoners.csv").then((data: any) => {
   const prisoners = crossfilter(data as Array<Prisoner>);
   const all = prisoners.groupAll();
-
 
   const nameDimension = prisoners.dimension(d => d.Name);
   const genderDimension = prisoners.dimension(d => d.Gender);
@@ -56,15 +113,15 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
 
   const inPrisonDimension = prisoners.dimension(d => {
     if (d["Date of Death"]) {
-      return "出狱";
+      return i18n.released;
     }
     let sentence = d["Sentence"];
     if (sentence === "unknown" || sentence === "") { // we assume "unknown" string in the csv to be in the prison
-      return "未知";
+      return i18n.unknown;
     } else if (sentence === "life") {
-      return "监狱";
+      return i18n.prison;
     } else if (sentence === "detention") {
-      return "看守所";
+      return i18n.detention;
     } else {
       let date = moment(sentence);
       if (sentence.length === 4) { // YYYY -> YYYY-12-31
@@ -77,9 +134,9 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
         console.log(`Invalid sentence field. Name: ${d.Name}, Sentence: ${sentence}`);
       }
       if (moment() < date) {
-        return "监狱";
+        return i18n.prison;
       } else {
-        return "出狱";
+        return i18n.released;
       }
     }
   })
@@ -96,11 +153,11 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
   .label(d => {
     let label;
     if(d.key === "male") {
-      label = "男";
+      label = i18n.male;
     } else if (d.key === "female") {
-      label = "女";
+      label = i18n.female;
     } else {
-      label = "未知";
+      label = i18n.unknown;
     }
     if (all.value()) {
       // label += ` - ${d.value} - ${(d.value / (all.value() as number) * 100).toFixed(1)}%`;
@@ -122,9 +179,9 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
   .label(d => {
     let label;
     if (d.key === true) {
-      label = "死亡";
+      label = i18n.dead;
     } else {
-      label = "活着";
+      label = i18n.alive;
     };
     label += ` - ${d.value}`;
     return label;
@@ -152,7 +209,7 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
   const birthYearGroupAll = birthYearGroup.all();
   const minBirthYear= birthYearGroupAll[1].key as number;
   const maxBirthYear = birthYearGroupAll[birthYearGroupAll.length - 1].key as number;
-  dateOfBirthChart
+  yearOfBirthChart
   .width(420)
   .height(200)
   .dimension(birthYearDimension)
@@ -161,7 +218,7 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
 
   searchNameWidget
   .dimension(nameDimension)
-  .placeHolder("搜索姓名" as any);
+  .placeHolder(i18n.search_name as any);
 
   prisonerTable
   .dimension(birthYearDimension)
@@ -170,48 +227,48 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
   .order(d3.descending)
   .columns([
     {
-      label: "姓名",
+      label: i18n.name,
       format: (d:Prisoner) => d.Name
     }, {
-      label: "性别",
+      label: i18n.gender,
       format: (d:Prisoner) => {
         if (d["Gender"] === "female") {
-          return "女";
+          return i18n.female;
         } else if (d["Gender"] === "male"){
-          return "男";
+          return i18n.male;
         } else {
-          return "未知"
+          return i18n.unknown
         }
       }
     }, {
-      label: "出生日期",
+      label: i18n.date_of_birth,
       format: (d:Prisoner) => {
         if (d["Date of Birth"]) {
           return d["Date of Birth"];
         } else {
-          return "未知";
+          return i18n.unknown;
         }
       }
     }, {
-      label: "死亡日期",
+      label: i18n.date_of_death,
       format: (d:Prisoner) => d["Date of Death"]
     }, {
-      label: "刑",
+      label: i18n.sentence,
       format: (d:Prisoner) => {
         const sentence = d.Sentence;
         if (sentence === "detention") {
-          return "看守所";
+          return i18n.detention;
         } else if (sentence === "unknown") {
-          return "未知";
+          return i18n.unknown;
         } else {
           return d["Sentence"];
         }
       }
     }, {
-      label: "出生地",
+      label: i18n.place_of_birth,
       format: (d:Prisoner) => d.Place
     }, {
-      label: "来源",
+      label: i18n.source,
       format: (d:Prisoner) => {
         let sources = d.Source.split(" ");
         let output = "";
@@ -252,7 +309,7 @@ d3.csv("chinese-political-prisoners.csv").then((data: any) => {
           .attr('disabled', ofs+pag>=totFilteredRecs ? 'true' : null);
       d3.select('#size').text(totFilteredRecs as any);
       if(totFilteredRecs != prisoners.size()){
-        d3.select('#totalsize').text("(filtered Total: " + prisoners.size() + " )");
+        d3.select('#totalsize').text("(Total: " + prisoners.size() + " )");
       }else{
         d3.select('#totalsize').text('');
       }
