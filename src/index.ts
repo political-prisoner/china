@@ -78,15 +78,15 @@ const ALL_TRANSLATIONS: IALL_TRANSLATIONS = {
 
 const path = window.location.pathname;
 let i18n: II18N;
-if (path.startsWith("/en")) {
+if (path.startsWith("/china/en")) {
   i18n = ALL_TRANSLATIONS.en;
-} else if (path.startsWith("/zh")) {
+} else if (path.startsWith("/china/zh")) {
   i18n = ALL_TRANSLATIONS.zh;
 } else {
   i18n = ALL_TRANSLATIONS.en; // This line should never be executed.
 }
 
-d3.csv("/chinese-political-prisoners.csv").then((data: any) => {
+d3.csv("/china/chinese-political-prisoners.csv").then((data: any) => {
   const prisoners = crossfilter(data as Array<Prisoner>);
   const all = prisoners.groupAll();
 
@@ -216,7 +216,7 @@ d3.csv("/chinese-political-prisoners.csv").then((data: any) => {
   .group(birthYearGroup)
   .x(d3.scaleLinear().domain([minBirthYear, maxBirthYear]));
 
-  searchNameWidget
+  (searchNameWidget as any)
   .dimension(nameDimension)
   .placeHolder(i18n.search_name as any);
 
@@ -288,7 +288,7 @@ d3.csv("/chinese-political-prisoners.csv").then((data: any) => {
   var ofs = 0, pag = 15;
 
   function update_offset() {
-      var totFilteredRecs = prisoners.groupAll().value();
+      var totFilteredRecs = prisoners.groupAll().value() as number;
       var end = ofs + pag > totFilteredRecs ? totFilteredRecs : ofs + pag;
       ofs = ofs >= totFilteredRecs ? Math.floor((totFilteredRecs as number - 1) / pag) * pag : ofs;
       ofs = ofs < 0 ? 0 : ofs;
@@ -297,7 +297,7 @@ d3.csv("/chinese-political-prisoners.csv").then((data: any) => {
       prisonerTable.endSlice(ofs+pag);
   }
   function display() {
-      var totFilteredRecs = prisoners.groupAll().value();
+      var totFilteredRecs = prisoners.groupAll().value() as number;
       var end = ofs + pag > totFilteredRecs ? totFilteredRecs : ofs + pag;
       d3.select('#begin')
           .text(end === 0? ofs : ofs + 1);
